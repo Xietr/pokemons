@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_cards">
+
+    <fragment
+        android:id="@+id/navigation_cards"
+        android:name="com.example.presentation.ui.scenes.all_cards.AllCardsFragment">
+        <action
+            android:id="@+id/action_all_cards_to_fragmentDetailedCard"
+            app:destination="@id/fragmentDetailedCard" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragmentDetailedCard"
+        android:name="com.example.presentation.ui.scenes.detailed_card.DetailedCardFragment"
+        tools:layout="@layout/fragment_detailed_card">
+        <argument
+            android:name="id"
+            app:argType="string" />
+    </fragment>
+
+    <action
+        android:id="@+id/action_global_fragmentDetailedCard"
+        app:destination="@id/fragmentDetailedCard" />
+
+    <fragment
+        android:id="@+id/navigation_favourite"
+        android:name="com.example.presentation.ui.scenes.favourite.FavouriteFragment"
+        tools:layout="" />
+
+</navigation>

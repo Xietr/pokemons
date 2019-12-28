@@ -1,8 +1,6 @@
 package com.example.presentation.di.network.retrofit
 
 import com.example.presentation.BuildConfig
-import com.example.presentation.auth.TokenAuthenticator
-import com.example.presentation.auth.TokenInterceptor
 import dagger.Module
 import dagger.Provides
 import io.reactivex.schedulers.Schedulers
@@ -12,6 +10,7 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
+
 
 @Module
 class RetrofitModule {
@@ -35,9 +34,7 @@ class RetrofitModule {
         }
 
         return OkHttpClient.Builder()
-            .authenticator(TokenAuthenticator())
             .addInterceptor(loggingInterceptor)
-            .addInterceptor(TokenInterceptor())
             .build()
     }
 }
