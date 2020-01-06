@@ -2,12 +2,8 @@ package com.example.presentation.ui.scenes.base.base_pagination
 
 import android.os.Bundle
 import android.util.TypedValue
-import android.view.Menu
-import android.view.MenuInflater
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.widget.SearchView
-import androidx.navigation.NavDirections
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.domain.entities.PokemonCard
 import com.example.presentation.R
@@ -49,16 +45,19 @@ abstract class BasePaginationFragment : MvpAppCompatFragment(R.layout.fragment_b
             addItemDecoration(GridItemDecoration(px))
 
             addOnScrollListener(PaginationScrollListener(onLoadMore = presenter::getCards))
-            itemAnimator = null
+//            itemAnimator = null
         }
     }
 
     override fun clearAdapter() {
+        cardsRecyclerView.recycledViewPool.clear()
         adapter.clear()
+        adapter.notifyDataSetChanged()//without it -> java.lang.IndexOutOfBoundsException: Inconsistency detected.
+        // Invalid item position 6(offset:6).state:10 androidx.recyclerview.widget.RecyclerView
     }
 
-    override fun updateRecyclerView(cards: List<PokemonCard?>?) {
-        adapter.addCards(cards as List<PokemonCard>)
+    override fun setRecyclerViewItems(list: List<PokemonCard>) {
+        adapter.setCards(list)
     }
 
     override fun setIsRefreshing(isVisible: Boolean) {

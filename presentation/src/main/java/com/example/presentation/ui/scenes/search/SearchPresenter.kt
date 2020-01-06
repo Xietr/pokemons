@@ -11,7 +11,7 @@ import javax.inject.Inject
 class SearchPresenter @Inject constructor(private val cardsWithCacheUseCase: CardsWithCacheUseCase) :
     BasePaginationPresenter<SearchView>() {
 
-    override fun getItems(page: Int, pageSize: Int, name: String): Single<List<PokemonCard?>?> {
+    override fun getItems(page: Int, pageSize: Int, name: String): Single<List<PokemonCard>> {
         return cardsWithCacheUseCase.getCards(page, pageSize, name)
     }
 }

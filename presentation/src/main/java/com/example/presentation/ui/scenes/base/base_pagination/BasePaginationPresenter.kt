@@ -13,12 +13,12 @@ abstract class BasePaginationPresenter<T : BasePaginationView> : MvpPresenter<T>
 
     internal var currentPage = 1
     internal var isLoading = false
-
+    private val cardsList = arrayListOf<PokemonCard>()
     internal var isLastPage = false
 
     internal var nameForSearch: String = ""
 
-    abstract fun getItems(page: Int, pageSize: Int, name: String = ""): Single<List<PokemonCard?>?>
+    abstract fun getItems(page: Int, pageSize: Int, name: String = ""): Single<List<PokemonCard>>
 
 
     override fun onFirstViewAttach() {
@@ -51,7 +51,8 @@ abstract class BasePaginationPresenter<T : BasePaginationView> : MvpPresenter<T>
                     isLastPage = true
                     viewState.showToast("Карточек нет")
                 } else {
-                    viewState.updateRecyclerView(it)
+                    cardsList.addAll(it)
+                    viewState.setRecyclerViewItems(cardsList)
                 }
             }, {
                 it.printStackTrace()
@@ -63,6 +64,7 @@ abstract class BasePaginationPresenter<T : BasePaginationView> : MvpPresenter<T>
     fun onRefresh() {
         viewState.setIsRefreshing(true)
         currentPage = 1
+        cardsList.clear()
         viewState.clearAdapter()
         getCards()
     }

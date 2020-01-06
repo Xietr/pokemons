@@ -1,10 +1,8 @@
 package com.example.domain.entities
 
-import com.google.gson.annotations.Expose
 import java.io.Serializable
 
 class PokemonCard(
-    @Expose(serialize = false, deserialize = false)
     var ability: Ability? = null,
     var artist: String? = null,
     var attacks: List<Attack?>? = null,

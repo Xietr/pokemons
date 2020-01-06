@@ -21,7 +21,7 @@ class PokemonCardRoomEntity(
     var setCode: String? = null,
     var subtype: String? = null,
     var supertype: String? = null,
-    var text: List<String?>? = null,
+//    var text: List<String?>? = null,
     var types: List<String?>? = null,
     var weaknesses: List<Weakness>? = null,
     var isFavorite: Int = 0

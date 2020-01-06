@@ -3,13 +3,13 @@ package com.example.data.caching.room
 import androidx.room.TypeConverter
 import com.example.domain.entities.Attack
 import com.example.domain.entities.Weakness
-import com.google.gson.GsonBuilder
+import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 
 object PokemonCardConverter {
 
-    private val gson = GsonBuilder().serializeNulls().create()
+    private val gson = Gson()
 
 
     @TypeConverter
@@ -23,9 +23,9 @@ object PokemonCardConverter {
     fun fromString(value: String): List<String> {
         val listType = object : TypeToken<List<String>>() {}.type
         return if (value.isNullOrEmpty()) {
-            gson.fromJson(value, listType)
-        } else {
             emptyList()
+        } else {
+            gson.fromJson(value, listType)
         }
     }
 
@@ -40,9 +40,9 @@ object PokemonCardConverter {
     fun fromStringToAttack(value: String): List<Attack> {
         val listType = object : TypeToken<List<Attack>>() {}.type
         return if (value.isNullOrEmpty()) {
-            gson.fromJson(value, listType)
-        } else {
             emptyList()
+        } else {
+            gson.fromJson(value, listType)
         }
     }
 
@@ -57,9 +57,9 @@ object PokemonCardConverter {
     fun fromStringToWeakness(value: String): List<Weakness> {
         val listType = object : TypeToken<List<Weakness>>() {}.type
         return if (value.isNullOrEmpty()) {
-            gson.fromJson(value, listType)
-        } else {
             emptyList()
+        } else {
+            gson.fromJson(value, listType)
         }
     }
 }

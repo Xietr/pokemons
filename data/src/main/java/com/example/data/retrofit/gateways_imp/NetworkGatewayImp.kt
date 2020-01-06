@@ -7,11 +7,11 @@ import io.reactivex.Single
 
 class NetworkGatewayImp(private val pokemonApi: PokemonApi): NetworkGateway {
 
-    override fun getCards(page: Int, limit: Int, name: String): Single<List<PokemonCard?>?> {
+    override fun getCards(page: Int, limit: Int, name: String): Single<List<PokemonCard>> {
         return pokemonApi.getPokemonCards(page, limit, name).flatMap{Single.just(it.cards)}
     }
 
-    override fun getCardById(id: String): Single<List<PokemonCard?>?> {
+    override fun getCardById(id: String): Single<List<PokemonCard>> {
         return pokemonApi.getCard(id).flatMap { Single.just(it.cards) }
     }
 }

@@ -3,13 +3,18 @@ package com.example.presentation.ui.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.domain.entities.PokemonCard
 import com.example.domain.gateways.CacheGateway
 import com.example.presentation.App
 import com.example.presentation.R
+import com.example.presentation.ui.utils.CardsDiffUtil
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.item_card.view.*
 import javax.inject.Inject
@@ -19,7 +24,7 @@ class CardsAdapter(
     private val navigateToDetailedCard: (id: String) -> Unit
 ) : RecyclerView.Adapter<CardsAdapter.CardsViewHolder>() {
 
-    var pokemonCards = mutableListOf<PokemonCard>()
+    var pokemonCards = listOf<PokemonCard>()
 
     @Inject
     lateinit var cacheGateway: CacheGateway
@@ -28,26 +33,22 @@ class CardsAdapter(
         App.appComponent.inject(this)
     }
 
-    fun addCards(cards: List<PokemonCard>) {
-        renderNewList(cards)
-    }
-
     fun clear() {
         renderNewList(emptyList())
     }
 
+    fun setCards(cards: List<PokemonCard>) {
+        renderNewList(cards)
+    }
+
     private fun renderNewList(newList: List<PokemonCard>) {
-//todo эта хуета не работает, извините я и так потратил ан это часа 2
-//        val diffCallback = CardsDiffUtil(pokemonCards, newList)
-//        val diffResult = DiffUtil.calculateDiff(diffCallback)
+        val diffCallback = CardsDiffUtil(pokemonCards, newList)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
         if (newList.isEmpty()) {
-//            pokemonCards = emptyList()
-            pokemonCards.clear()
+            pokemonCards = emptyList()
         }
-        pokemonCards = (pokemonCards + newList).toMutableList()
-        notifyDataSetChanged()
-//todo вместе с этой )))))))
-//        diffResult.dispatchUpdatesTo(this)
+        pokemonCards = newList
+        diffResult.dispatchUpdatesTo(this)
     }
 
     override fun getItemCount(): Int {
@@ -81,37 +82,46 @@ class CardsAdapter(
             val checkBox = itemView.favouriteCheckBox
 
             checkBox.setOnCheckedChangeListener(null)
-            checkBox.isChecked = card.isFavorite == 1
 
+            val compositeDisposable = CompositeDisposable()
+            cacheGateway.getCardById(card.id)
+                .subscribeOn(Schedulers.io())
+                .doFinally { compositeDisposable.dispose() }
+                .subscribe({
+                    checkBox.isChecked = (card.isFavorite == 1) or (it.isFavorite == 1)
+                    setupOnCheckListener(checkBox, card.id)
+                }, {}).addTo(compositeDisposable)
+
+            imageView.setOnClickListener {
+                navigateToDetailedCard.invoke(card.id)
+            }
+        }
+
+        private fun setupOnCheckListener(checkBox: CheckBox, id: String) {
             checkBox.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
-                    cacheGateway.updateCard(card.id, 1)
+                    cacheGateway.updateCard(id, 1)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnComplete {
                             makeToast.invoke("Добавлено в избранное")
-                            pokemonCards.find { it.id == card.id }?.isFavorite = 1
                         }
                         .doOnError {
                             makeToast.invoke("Ошибка при добавлении в избранное")
                         }
                         .subscribe()
                 } else {
-                    cacheGateway.updateCard(card.id, 0)
+                    cacheGateway.updateCard(id, 0)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnComplete {
                             makeToast.invoke("Удалено из избранного")
-                            pokemonCards.find { it.id == card.id }?.isFavorite = 0
                         }
                         .doOnError {
-                            makeToast.invoke("Ошибка при удалении из избарнного")
+                            makeToast.invoke("Ошибка при удалении из избранного")
                         }
                         .subscribe()
                 }
-            }
-            imageView.setOnClickListener {
-                navigateToDetailedCard.invoke(card.id)
             }
         }
     }

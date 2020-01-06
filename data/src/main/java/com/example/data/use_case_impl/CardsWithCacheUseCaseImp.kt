@@ -11,13 +11,15 @@ class CardsWithCacheUseCaseImp(
     private val networkGateway: NetworkGateway
 ) : CardsWithCacheUseCase {
 
-    override fun getCards(page: Int, pageSize: Int, name: String): Single<List<PokemonCard?>?> {
+    override fun getCards(page: Int, pageSize: Int, name: String): Single<List<PokemonCard>> {
         return networkGateway.getCards(page, pageSize, name)
             .flatMap { cacheGateway.saveCards(it).andThen(Single.just(it)) }
             .onErrorResumeNext { cacheGateway.getCards(page, pageSize, name) }
     }
 
     override fun getCardById(id: String): Single<PokemonCard> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return networkGateway.getCardById(id)
+            .flatMap { cacheGateway.saveCard(it.component1()).andThen(Single.just(it.component1())) }
+            .onErrorResumeNext { cacheGateway.getCardById(id) }
     }
 }

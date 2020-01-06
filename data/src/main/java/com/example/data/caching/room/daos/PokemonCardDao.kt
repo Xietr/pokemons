@@ -1,9 +1,8 @@
 package com.example.data.caching.room.daos
 
 import androidx.room.Dao
-import androidx.room.Ignore
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy.*
+import androidx.room.OnConflictStrategy.IGNORE
 import androidx.room.Query
 import com.example.data.caching.room.entities.PokemonCardRoomEntity
 import io.reactivex.Completable
@@ -14,9 +13,6 @@ interface PokemonCardDao {
 
     @Insert(onConflict = IGNORE)
     fun saveCards(vararg cards: PokemonCardRoomEntity?): Completable
-
-    @Insert//(onConflict = ABORT)
-    fun saveCard(card: PokemonCardRoomEntity?): Completable
 
     @Query("UPDATE pokemon SET isFavorite = :isFavorite WHERE id = :id")
     fun updateCard(id: String, isFavorite: Int): Completable
@@ -38,7 +34,7 @@ interface PokemonCardDao {
     ): Single<List<PokemonCardRoomEntity>>
 
     @Query("SELECT * from pokemon WHERE id = :id")
-    fun getCardsById(id: String): Single<PokemonCardRoomEntity>
+    fun getCardById(id: String): Single<PokemonCardRoomEntity>
 
     @Query("DELETE from pokemon")
     fun deleteAll()

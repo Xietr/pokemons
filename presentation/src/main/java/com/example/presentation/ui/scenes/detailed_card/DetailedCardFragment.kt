@@ -58,9 +58,11 @@ class DetailedCardFragment : MvpAppCompatFragment(R.layout.fragment_detailed_car
             setText(subtype, subtypeTextView, "Подтип : ")
             setText(hp, hpAmountTextView, "Количество здоровья : ")
 
-            val strWithoutComma = attacks?.joinToString(separator = "\n")?.replace(",", ", \n")
-            val strWithoutBracket = strWithoutComma?.replace("(", ": \n")?.replace(")", "\n")
-            setText(strWithoutBracket?.replace("text=", ""), attackTypeTextView, "Типы атак : ")
+            val formatedString =
+                attacks?.joinToString()?.replace("A", "\nA")?.replace("(", "\n")
+                    ?.replace(")", "\n")?.replace("[", "")?.replace("]", "")
+                    ?.replace("=", ": ")?.replace(", \n", "\n")
+            setText(formatedString, attackTypeTextView, "Типы атак : ")
         }
     }
 

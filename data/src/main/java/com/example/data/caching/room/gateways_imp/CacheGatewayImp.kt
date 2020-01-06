@@ -12,7 +12,7 @@ class CacheGatewayImp(
     private val pokemonDao: PokemonCardDao
 ) : CacheGateway {
 
-    override fun getCards(page: Int, pageSize: Int, name: String): Single<List<PokemonCard?>?> {
+    override fun getCards(page: Int, pageSize: Int, name: String): Single<List<PokemonCard>> {
         return if (name.isEmpty()) {
             pokemonDao.getCards(pageSize, (page - 1) * pageSize).flatMap { list ->
                 Single.just(list.map { card ->
@@ -29,24 +29,19 @@ class CacheGatewayImp(
     }
 
     override fun getCardById(id: String): Single<PokemonCard> {
-        return pokemonDao.getCardsById(id).flatMap { Single.just(toPokemonCard(it)) }
+        return pokemonDao.getCardById(id).flatMap { Single.just(toPokemonCard(it)) }
     }
 
     override fun saveCard(pokemonCard: PokemonCard): Completable {
-        return pokemonDao.saveCard(toRoomCard(pokemonCard))
+        return pokemonDao.saveCards(toRoomCard(pokemonCard))
     }
 
-    override fun saveCards(cards: List<PokemonCard?>?): Completable {
-        val nonNullCards = cards as? List<PokemonCard>
-        return if (nonNullCards != null) {
-            val roomList = nonNullCards.map { toRoomCard(it) }
-            pokemonDao.saveCards(*roomList.toTypedArray())
-        } else {
-            Completable.error(Throwable("failed to save cards"))
-        }
+    override fun saveCards(cards: List<PokemonCard>): Completable {
+        val roomList = cards.map { toRoomCard(it) }
+        return pokemonDao.saveCards(*roomList.toTypedArray())
     }
 
-    override fun getFavoriteCards(page: Int, pageSize: Int): Single<List<PokemonCard?>?> {
+    override fun getFavoriteCards(page: Int, pageSize: Int): Single<List<PokemonCard>> {
         return pokemonDao.getFavoriteCards(pageSize, (page - 1) * pageSize).flatMap { list ->
             Single.just(list.map { card ->
                 toPokemonCard(card)
@@ -75,7 +70,7 @@ class CacheGatewayImp(
                 setCode = setCode,
                 subtype = subtype,
                 supertype = supertype,
-                text = text,
+//                text = text,
                 types = types,
                 weaknesses = weaknesses
             )
@@ -98,7 +93,7 @@ class CacheGatewayImp(
                 setCode = setCode,
                 subtype = subtype,
                 supertype = supertype,
-                text = text,
+//                text = text,
                 types = types,
                 weaknesses = weaknesses,
                 isFavorite = isFavorite
