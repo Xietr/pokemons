@@ -1,4 +1,4 @@
-package com.example.presentation.ui.scenes.base
+package com.example.presentation.ui.scenes.base.base_pagination
 
 import com.example.domain.entities.PokemonCard
 import io.reactivex.Single
@@ -7,7 +7,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import moxy.MvpPresenter
 
-abstract class BasePresenter<T : BaseView> : MvpPresenter<T>() {
+abstract class BasePaginationPresenter<T : BasePaginationView> : MvpPresenter<T>() {
 
     internal val compositeDisposable = CompositeDisposable()
 
@@ -31,10 +31,7 @@ abstract class BasePresenter<T : BaseView> : MvpPresenter<T>() {
             return
         }
 
-        getItems(
-            currentPage,
-            PAGE_SIZE, nameForSearch
-        )
+        getItems(currentPage, PAGE_SIZE, nameForSearch)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe {
@@ -52,7 +49,7 @@ abstract class BasePresenter<T : BaseView> : MvpPresenter<T>() {
             .subscribe({
                 if (it.isNullOrEmpty()) {
                     isLastPage = true
-                    viewState.showToast("Карточки закончились")
+                    viewState.showToast("Карточек нет")
                 } else {
                     viewState.updateRecyclerView(it)
                 }
@@ -67,7 +64,6 @@ abstract class BasePresenter<T : BaseView> : MvpPresenter<T>() {
         viewState.setIsRefreshing(true)
         currentPage = 1
         viewState.clearAdapter()
-        nameForSearch = ""
         getCards()
     }
 

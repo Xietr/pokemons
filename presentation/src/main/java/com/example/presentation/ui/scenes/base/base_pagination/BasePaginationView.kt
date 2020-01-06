@@ -1,12 +1,13 @@
-package com.example.presentation.ui.scenes.base
+package com.example.presentation.ui.scenes.base.base_pagination
 
 import com.example.domain.entities.PokemonCard
 import moxy.MvpView
+import moxy.viewstate.strategy.AddToEndSingleStrategy
 import moxy.viewstate.strategy.AddToEndStrategy
 import moxy.viewstate.strategy.SkipStrategy
 import moxy.viewstate.strategy.StateStrategyType
 
-interface BaseView : MvpView {
+interface BasePaginationView : MvpView {
 
     @StateStrategyType(SkipStrategy::class)
     fun showToast(message: String)
@@ -14,7 +15,7 @@ interface BaseView : MvpView {
     @StateStrategyType(SkipStrategy::class)
     fun clearAdapter()
 
-    @StateStrategyType(AddToEndStrategy::class)
+    @StateStrategyType(AddToEndSingleStrategy ::class)
     fun updateRecyclerView(list: List<PokemonCard?>?)
 
     @StateStrategyType(SkipStrategy::class)

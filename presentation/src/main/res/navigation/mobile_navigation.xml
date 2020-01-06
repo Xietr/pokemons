@@ -11,6 +11,9 @@
         <action
             android:id="@+id/action_all_cards_to_fragmentDetailedCard"
             app:destination="@id/fragmentDetailedCard" />
+        <action
+            android:id="@+id/action_navigation_cards_to_searchFragment"
+            app:destination="@id/searchFragment" />
     </fragment>
 
     <fragment
@@ -22,13 +25,28 @@
             app:argType="string" />
     </fragment>
 
-    <action
-        android:id="@+id/action_global_fragmentDetailedCard"
-        app:destination="@id/fragmentDetailedCard" />
-
     <fragment
         android:id="@+id/navigation_favourite"
         android:name="com.example.presentation.ui.scenes.favourite.FavouriteFragment"
-        tools:layout="" />
+        tools:layout="">
+        <action
+            android:id="@+id/action_navigation_favourite_to_fragmentDetailedCard"
+            app:destination="@id/fragmentDetailedCard" />
+        <action
+            android:id="@+id/action_navigation_favourite_to_searchFragment"
+            app:destination="@id/searchFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.example.presentation.ui.scenes.search.SearchFragment"
+        android:label="SearchFragment" >
+        <argument
+            android:name="nameForSearch"
+            app:argType="string"
+            app:nullable="true" />
+        <action
+            android:id="@+id/action_searchFragment_to_fragmentDetailedCard"
+            app:destination="@id/fragmentDetailedCard" />
+    </fragment>
 
 </navigation>

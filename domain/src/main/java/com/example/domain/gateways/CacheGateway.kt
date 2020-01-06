@@ -6,7 +6,7 @@ import io.reactivex.Single
 
 interface CacheGateway {
 
-    fun saveCards(cards: List<PokemonCard?>?, isFavourite: Boolean = false): Completable
+    fun saveCards(cards: List<PokemonCard?>?): Completable
 
     fun saveCard(pokemonCard: PokemonCard): Completable
 

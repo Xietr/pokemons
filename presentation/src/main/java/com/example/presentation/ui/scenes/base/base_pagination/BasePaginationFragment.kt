@@ -1,11 +1,13 @@
-package com.example.presentation.ui.scenes.base
+package com.example.presentation.ui.scenes.base.base_pagination
 
 import android.os.Bundle
 import android.util.TypedValue
-import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
+import androidx.navigation.NavDirections
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.domain.entities.PokemonCard
 import com.example.presentation.R
@@ -16,11 +18,12 @@ import kotlinx.android.synthetic.main.fragment_base_cards.*
 import moxy.MvpAppCompatFragment
 import kotlin.math.roundToInt
 
-abstract class BaseFragment : MvpAppCompatFragment(R.layout.fragment_base_cards), BaseView {
+abstract class BasePaginationFragment : MvpAppCompatFragment(R.layout.fragment_base_cards),
+    BasePaginationView {
 
-    abstract val presenter: BasePresenter<*>
+    abstract val presenter: BasePaginationPresenter<*>
 
-    private val adapter = CardsAdapter { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() }
+    abstract val adapter: CardsAdapter
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -38,7 +41,7 @@ abstract class BaseFragment : MvpAppCompatFragment(R.layout.fragment_base_cards)
     private fun setupRecyclerView() {
         cardsRecyclerView.apply {
             layoutManager = GridLayoutManager(context, 2)
-            adapter = this@BaseFragment.adapter
+            adapter = this@BasePaginationFragment.adapter
 
             val px = TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP, 16f, resources.displayMetrics

@@ -2,7 +2,6 @@ package com.example.presentation.ui.scenes.detailed_card
 
 import com.example.domain.gateways.CacheGateway
 import com.example.domain.gateways.NetworkGateway
-import com.example.presentation.ui.scenes.base.BasePresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers

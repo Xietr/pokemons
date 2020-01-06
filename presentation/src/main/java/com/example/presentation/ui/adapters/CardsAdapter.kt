@@ -3,23 +3,23 @@ package com.example.presentation.ui.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.domain.entities.PokemonCard
 import com.example.domain.gateways.CacheGateway
 import com.example.presentation.App
 import com.example.presentation.R
-import com.example.presentation.ui.scenes.all_cards.AllCardsFragmentDirections
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.item_card.view.*
 import javax.inject.Inject
 
-class CardsAdapter(private val makeToast: (message: String) -> Unit) :
-    RecyclerView.Adapter<CardsAdapter.CardsViewHolder>() {
+class CardsAdapter(
+    private val makeToast: (message: String) -> Unit,
+    private val navigateToDetailedCard: (id: String) -> Unit
+) : RecyclerView.Adapter<CardsAdapter.CardsViewHolder>() {
 
-    var pokemonCards = listOf<PokemonCard>()
+    var pokemonCards = mutableListOf<PokemonCard>()
 
     @Inject
     lateinit var cacheGateway: CacheGateway
@@ -38,14 +38,16 @@ class CardsAdapter(private val makeToast: (message: String) -> Unit) :
 
     private fun renderNewList(newList: List<PokemonCard>) {
 //todo эта хуета не работает, извините я и так потратил ан это часа 2
-// val diffResult = DiffUtil.calculateDiff(CardsDiffUtil(pokemonCards, newList))
+//        val diffCallback = CardsDiffUtil(pokemonCards, newList)
+//        val diffResult = DiffUtil.calculateDiff(diffCallback)
         if (newList.isEmpty()) {
-            pokemonCards = emptyList()
+//            pokemonCards = emptyList()
+            pokemonCards.clear()
         }
-        pokemonCards = pokemonCards + newList
+        pokemonCards = (pokemonCards + newList).toMutableList()
         notifyDataSetChanged()
 //todo вместе с этой )))))))
-// diffResult.dispatchUpdatesTo(this)
+//        diffResult.dispatchUpdatesTo(this)
     }
 
     override fun getItemCount(): Int {
@@ -55,7 +57,7 @@ class CardsAdapter(private val makeToast: (message: String) -> Unit) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardsViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val view = inflater.inflate(R.layout.item_card, parent, false)
-        return CardsViewHolder(view, makeToast)
+        return CardsViewHolder(view, makeToast, navigateToDetailedCard)
     }
 
     override fun onBindViewHolder(holder: CardsViewHolder, position: Int) {
@@ -65,7 +67,8 @@ class CardsAdapter(private val makeToast: (message: String) -> Unit) :
 
     inner class CardsViewHolder(
         view: View,
-        private val makeToast: (message: String) -> Unit
+        private val makeToast: (message: String) -> Unit,
+        private val navigateToDetailedCard: (id: String) -> Unit
     ) : RecyclerView.ViewHolder(view) {
 
         fun bind(card: PokemonCard) {
@@ -76,6 +79,8 @@ class CardsAdapter(private val makeToast: (message: String) -> Unit) :
                 .into(imageView)
 
             val checkBox = itemView.favouriteCheckBox
+
+            checkBox.setOnCheckedChangeListener(null)
             checkBox.isChecked = card.isFavorite == 1
 
             checkBox.setOnCheckedChangeListener { _, isChecked ->
@@ -85,6 +90,7 @@ class CardsAdapter(private val makeToast: (message: String) -> Unit) :
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnComplete {
                             makeToast.invoke("Добавлено в избранное")
+                            pokemonCards.find { it.id == card.id }?.isFavorite = 1
                         }
                         .doOnError {
                             makeToast.invoke("Ошибка при добавлении в избранное")
@@ -96,6 +102,7 @@ class CardsAdapter(private val makeToast: (message: String) -> Unit) :
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnComplete {
                             makeToast.invoke("Удалено из избранного")
+                            pokemonCards.find { it.id == card.id }?.isFavorite = 0
                         }
                         .doOnError {
                             makeToast.invoke("Ошибка при удалении из избарнного")
@@ -104,8 +111,7 @@ class CardsAdapter(private val makeToast: (message: String) -> Unit) :
                 }
             }
             imageView.setOnClickListener {
-                val action = AllCardsFragmentDirections.actionAllCardsToFragmentDetailedCard(card.id)
-                it.findNavController().navigate(action)
+                navigateToDetailedCard.invoke(card.id)
             }
         }
     }

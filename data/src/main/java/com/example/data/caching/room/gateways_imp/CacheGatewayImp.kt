@@ -36,9 +36,14 @@ class CacheGatewayImp(
         return pokemonDao.saveCard(toRoomCard(pokemonCard))
     }
 
-    override fun saveCards(cards: List<PokemonCard?>?, isFavourite: Boolean): Completable {
-        val array = cards?.map { card -> card?.let { it -> toRoomCard(it) } }
-        return pokemonDao.saveCards(array)
+    override fun saveCards(cards: List<PokemonCard?>?): Completable {
+        val nonNullCards = cards as? List<PokemonCard>
+        return if (nonNullCards != null) {
+            val roomList = nonNullCards.map { toRoomCard(it) }
+            pokemonDao.saveCards(*roomList.toTypedArray())
+        } else {
+            Completable.error(Throwable("failed to save cards"))
+        }
     }
 
     override fun getFavoriteCards(page: Int, pageSize: Int): Single<List<PokemonCard?>?> {
