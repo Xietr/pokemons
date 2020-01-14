@@ -5,7 +5,7 @@ import java.io.Serializable
 class PokemonCard(
     var ability: Ability? = null,
     var artist: String? = null,
-    var attacks: List<Attack?>? = null,
+    var attacks: List<Attack>? = null,
     var convertedRetreatCost: Int? = null,
     var evolvesFrom: String? = null,
     var hp: String? = null,
@@ -23,7 +23,7 @@ class PokemonCard(
     var setCode: String? = null,
     var subtype: String? = null,
     var supertype: String? = null,
-    var text: List<String?>? = null,
+    var text: List<String>? = null,
     var types: List<String?>? = null,
     var weaknesses: List<Weakness>? = null,
     var isFavorite: Int = 0

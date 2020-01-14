@@ -70,7 +70,7 @@ class CacheGatewayImp(
                 setCode = setCode,
                 subtype = subtype,
                 supertype = supertype,
-//                text = text,
+                text = text,
                 types = types,
                 weaknesses = weaknesses
             )
@@ -93,7 +93,7 @@ class CacheGatewayImp(
                 setCode = setCode,
                 subtype = subtype,
                 supertype = supertype,
-//                text = text,
+                text = text,
                 types = types,
                 weaknesses = weaknesses,
                 isFavorite = isFavorite

@@ -9,7 +9,7 @@ import com.example.domain.entities.Weakness
 class PokemonCardRoomEntity(
     @PrimaryKey
     var id: String = "",
-    var attacks: List<Attack?>? = null,
+    var attacks: List<Attack>? = null,
     var hp: String? = null,
     var imageUrl: String? = null,
     var imageUrlHiRes: String? = null,
@@ -21,7 +21,7 @@ class PokemonCardRoomEntity(
     var setCode: String? = null,
     var subtype: String? = null,
     var supertype: String? = null,
-//    var text: List<String?>? = null,
+    var text: List<String>? = null,
     var types: List<String?>? = null,
     var weaknesses: List<Weakness>? = null,
     var isFavorite: Int = 0
